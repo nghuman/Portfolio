@@ -49,7 +49,7 @@ const EDUCATION = [
     year: "2016",
     school: "Hack Reactor",
     degree: "Advanced Software Engineering",
-    emoji: "⚡",
+    emoji: "🧬",
   },
   {
     year: "2013",
