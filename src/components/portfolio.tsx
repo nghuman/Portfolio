@@ -577,12 +577,45 @@ function DesktopIcons({ onOpen }: { onOpen: (id: string) => void }) {
   );
 }
 
+/* ─── MOBILE FEED ───────────────────────────────────────────────────────── */
+function MobileFeed() {
+  const [showEasterEgg, setShowEasterEgg] = useState(false);
+  return (
+    <div style={{ minHeight: "100vh", background: "#080808" }}>
+      <Particles />
+      <MenuBar onOpen={() => {}} />
+      <div className="mobile-feed">
+        <AboutWindow onClose={() => {}} />
+        <Terminal onClose={() => {}} onEasterEgg={() => setShowEasterEgg(true)} />
+        <ExpWindow exp={EXPERIENCES[0]} pos={{ x: 0, y: 0 }} onClose={() => {}} />
+        <ExpWindow exp={EXPERIENCES[1]} pos={{ x: 0, y: 0 }} onClose={() => {}} />
+        <SkillsWindow onClose={() => {}} />
+        <EduWindow onClose={() => {}} />
+      </div>
+      {showEasterEgg && <MatrixRain onDone={() => setShowEasterEgg(false)} />}
+    </div>
+  );
+}
+
 /* ─── DESKTOP ───────────────────────────────────────────────────────────── */
 type OpenState = Record<string, boolean>;
 
+function useIsMobile() {
+  const [isMobile, setIsMobile] = useState(() => window.innerWidth <= 768);
+  useEffect(() => {
+    const handler = () => setIsMobile(window.innerWidth <= 768);
+    window.addEventListener("resize", handler);
+    return () => window.removeEventListener("resize", handler);
+  }, []);
+  return isMobile;
+}
+
 function Desktop() {
+  const isMobile = useIsMobile();
   const [open, setOpen] = useState<OpenState>({ terminal: true, about: true });
   const [showEasterEgg, setShowEasterEgg] = useState(false);
+
+  if (isMobile) return <MobileFeed />;
 
   const openW = (id: string) => setOpen((o) => ({ ...o, [id]: true }));
   const closeW = (id: string) => setOpen((o) => ({ ...o, [id]: false }));

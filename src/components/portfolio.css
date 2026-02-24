@@ -14,6 +14,74 @@ body {
   cursor: none;
 }
 
+/* ── MOBILE LAYOUT ──────────────────────────────────────── */
+@media (max-width: 768px) {
+  body {
+    overflow-y: auto;
+    cursor: auto;
+  }
+
+  .cursor-dot,
+  .cursor-ring,
+  .desktop-icons,
+  .desktop-hint,
+  .dock,
+  .menubar__terminal-btn {
+    display: none !important;
+  }
+
+  .menubar {
+    padding: 10px 16px;
+  }
+
+  .menubar__name {
+    display: none;
+  }
+
+  .mobile-feed {
+    padding: 70px 16px 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .window {
+    position: relative !important;
+    left: auto !important;
+    top: auto !important;
+    width: 100% !important;
+    transform: none !important;
+    box-shadow: none !important;
+    border-radius: 10px;
+  }
+
+  .window__titlebar {
+    cursor: default !important;
+  }
+
+  .window__body {
+    max-height: none !important;
+    overflow-y: visible !important;
+    padding: 16px;
+  }
+
+  .about__stats {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .terminal__input {
+    cursor: auto;
+  }
+
+  .skills__tag {
+    cursor: auto;
+  }
+
+  .exp__bullet {
+    cursor: auto;
+  }
+}
+
 /* ── BOOT ───────────────────────────────────────────────── */
 .boot-screen {
   position: fixed;
