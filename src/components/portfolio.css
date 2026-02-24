@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Mono:wght@300;400;500&display=swap");
 
 *,
 *::before,
@@ -92,12 +92,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
 }
 
 .boot-logo {
   margin-bottom: 36px;
-  font-family: 'DM Serif Display', serif;
+  font-family: "DM Serif Display", serif;
   font-size: 52px;
   color: #00ff88;
   letter-spacing: -2px;
@@ -119,12 +119,22 @@ body {
   animation: bootFadeIn 0.3s forwards;
 }
 
-.boot-line--normal { color: #00ff88; }
-.boot-line--final  { color: #facc15; }
+.boot-line--normal {
+  color: #00ff88;
+}
+.boot-line--final {
+  color: #facc15;
+}
 
 @keyframes bootFadeIn {
-  from { opacity: 0; transform: translateX(-8px); }
-  to   { opacity: 1; transform: none; }
+  from {
+    opacity: 0;
+    transform: translateX(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ── CURSOR ─────────────────────────────────────────────── */
@@ -173,7 +183,7 @@ body {
   background: rgba(8, 8, 8, 0.75);
   backdrop-filter: blur(14px);
   border-bottom: 1px solid #1a1a1a;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
 }
 
 .menubar__left {
@@ -212,7 +222,7 @@ body {
   border-radius: 4px;
   cursor: none;
   font-size: 11px;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   transition: border-color 0.2s;
 }
 
@@ -228,7 +238,7 @@ body {
   transform: translateX(-50%);
   font-size: 11px;
   color: #2a2a2a;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   z-index: 40;
   white-space: nowrap;
   pointer-events: none;
@@ -278,7 +288,7 @@ body {
 .dock__emoji--terminal {
   font-size: 13px;
   color: #00ff88;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
 }
 
 .dock__tooltip {
@@ -291,7 +301,7 @@ body {
   font-size: 11px;
   color: #aaa;
   white-space: nowrap;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   pointer-events: none;
 }
 
@@ -300,7 +310,7 @@ body {
   position: fixed;
   background: #0d0d0d;
   border-radius: 8px;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   overflow: hidden;
   transition: box-shadow 0.2s;
 }
@@ -328,9 +338,15 @@ body {
   border: none;
 }
 
-.window__btn--close  { background: #ff5f57; }
-.window__btn--min    { background: #febc2e; }
-.window__btn--max    { background: #28c840; }
+.window__btn--close {
+  background: #ff5f57;
+}
+.window__btn--min {
+  background: #febc2e;
+}
+.window__btn--max {
+  background: #28c840;
+}
 
 .window__title {
   margin-left: 8px;
@@ -346,14 +362,26 @@ body {
 /* ── TERMINAL WINDOW ────────────────────────────────────── */
 .terminal__output {
   color: #00ff88;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   font-size: 12px;
   line-height: 1.7;
 }
 
-.terminal__line--input  { color: #fff; white-space: pre-wrap; margin-bottom: 2px; }
-.terminal__line--sys    { color: #facc15; white-space: pre-wrap; margin-bottom: 2px; }
-.terminal__line--output { color: #00ff88; white-space: pre-wrap; margin-bottom: 2px; }
+.terminal__line--input {
+  color: #fff;
+  white-space: pre-wrap;
+  margin-bottom: 2px;
+}
+.terminal__line--sys {
+  color: #facc15;
+  white-space: pre-wrap;
+  margin-bottom: 2px;
+}
+.terminal__line--output {
+  color: #00ff88;
+  white-space: pre-wrap;
+  margin-bottom: 2px;
+}
 
 .terminal__input-row {
   display: flex;
@@ -373,7 +401,7 @@ body {
   border: none;
   outline: none;
   color: #00ff88;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   font-size: 12px;
   caret-color: #00ff88;
   cursor: none;
@@ -404,7 +432,7 @@ body {
   border-radius: 4px;
   font-size: 11px;
   color: #888;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
   cursor: none;
   transition: all 0.2s;
   background: transparent;
@@ -486,7 +514,7 @@ body {
 }
 
 .about__name {
-  font-family: 'DM Serif Display', serif;
+  font-family: "DM Serif Display", serif;
   font-size: 22px;
   color: #fff;
   letter-spacing: -0.5px;
@@ -522,7 +550,7 @@ body {
 }
 
 .about__stat-num {
-  font-family: 'DM Serif Display', serif;
+  font-family: "DM Serif Display", serif;
   font-size: 26px;
   line-height: 1;
 }
@@ -548,7 +576,7 @@ body {
   display: flex;
   gap: 8px;
   transition: color 0.2s;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
 }
 
 .about__link:hover {
@@ -580,7 +608,7 @@ body {
 }
 
 .edu__school {
-  font-family: 'DM Serif Display', serif;
+  font-family: "DM Serif Display", serif;
   font-size: 17px;
   color: #ddd;
 }
@@ -595,6 +623,318 @@ body {
 .edu__degree {
   color: #555;
   font-size: 12px;
+}
+
+.terminal__secret {
+  color: #facc15;
+  text-shadow:
+    0 0 8px #facc15aa,
+    0 0 20px #facc1555;
+  animation: secretPulse 2s ease-in-out infinite alternate;
+  cursor: none;
+}
+
+@keyframes secretPulse {
+  from {
+    text-shadow:
+      0 0 6px #facc1588,
+      0 0 14px #facc1533;
+  }
+  to {
+    text-shadow:
+      0 0 12px #facc15cc,
+      0 0 28px #facc1577;
+  }
+}
+
+/* ── TEXT ADVENTURE ────────────────────────────────────────── */
+.adventure {
+  position: fixed;
+  inset: 0;
+  z-index: 8500;
+  background: rgba(0, 0, 0, 0.96);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  font-family: "DM Mono", monospace;
+  overflow-y: auto;
+}
+
+.adventure__screen {
+  width: 100%;
+  max-width: 580px;
+  background: #080808;
+  border: 1px solid #00ff8830;
+  box-shadow: 0 0 60px #00ff8815;
+  animation: adventureIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  padding-bottom: 20px;
+}
+
+@keyframes adventureIn {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.adventure__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 18px;
+  background: #00ff88;
+  gap: 12px;
+}
+
+.adventure__location {
+  font-size: 10px;
+  color: #000;
+  letter-spacing: 2px;
+  font-weight: 500;
+}
+
+.adventure__progress {
+  font-size: 11px;
+  color: #00000088;
+  letter-spacing: 4px;
+  flex-shrink: 0;
+}
+
+.adventure__narrative {
+  padding: 22px 22px 8px;
+  min-height: 80px;
+}
+
+.adventure__line {
+  color: #888;
+  font-size: 12px;
+  line-height: 1.9;
+  animation: lineFade 0.3s ease forwards;
+}
+
+@keyframes lineFade {
+  from {
+    opacity: 0;
+    transform: translateX(-6px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.adventure__cursor {
+  display: inline-block;
+  color: #00ff88;
+  font-size: 12px;
+  animation: cursorBlink 0.7s step-end infinite;
+}
+
+@keyframes cursorBlink {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0;
+  }
+}
+
+.adventure__question-block {
+  padding: 0 22px;
+  animation: lineFade 0.3s ease forwards;
+}
+
+.adventure__question {
+  color: #fff;
+  font-size: 12px;
+  line-height: 1.7;
+  margin-bottom: 14px;
+  padding: 14px;
+  border-left: 2px solid #facc15;
+  background: #facc1508;
+}
+
+.adventure__quip {
+  color: #e23b3b;
+  font-size: 11px;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #e23b3b0a;
+  border-left: 2px solid #e23b3b;
+  animation: lineFade 0.2s ease forwards;
+}
+
+.adventure__success {
+  color: #00ff88;
+  font-size: 11px;
+  margin-bottom: 10px;
+  padding: 8px 12px;
+  background: #00ff8808;
+  border-left: 2px solid #00ff88;
+  animation: lineFade 0.2s ease forwards;
+}
+
+.adventure__choices {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.adventure__choice {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: transparent;
+  border: 1px solid #1e1e1e;
+  border-radius: 4px;
+  padding: 10px 14px;
+  cursor: none;
+  text-align: left;
+  transition: all 0.15s;
+  width: 100%;
+}
+
+.adventure__choice:hover {
+  border-color: #00ff8844;
+  background: #00ff8808;
+}
+
+.adventure__choice-label {
+  color: #00ff88;
+  font-size: 11px;
+  font-family: "DM Mono", monospace;
+  flex-shrink: 0;
+}
+
+.adventure__choice-text {
+  color: #777;
+  font-size: 12px;
+  font-family: "DM Mono", monospace;
+  transition: color 0.15s;
+}
+
+.adventure__choice:hover .adventure__choice-text {
+  color: #ccc;
+}
+
+.adventure__exit {
+  display: block;
+  margin: 22px auto 0;
+  background: transparent;
+  border: none;
+  color: #2a2a2a;
+  font-size: 10px;
+  font-family: "DM Mono", monospace;
+  cursor: none;
+  letter-spacing: 1px;
+  transition: color 0.2s;
+}
+
+.adventure__exit:hover {
+  color: #555;
+}
+
+/* complete screen */
+.adventure__screen--complete {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px 32px 36px;
+  text-align: center;
+}
+
+.adventure__complete-badge {
+  font-size: 32px;
+  color: #facc15;
+  text-shadow: 0 0 30px #facc1566;
+  margin-bottom: 16px;
+  animation: badgePop 0.5s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes badgePop {
+  from {
+    transform: scale(0) rotate(-30deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
+}
+
+.adventure__complete-title {
+  font-family: "DM Serif Display", serif;
+  font-size: 28px;
+  color: #00ff88;
+  letter-spacing: 2px;
+  text-shadow: 0 0 30px #00ff8866;
+  margin-bottom: 10px;
+}
+
+.adventure__complete-sub {
+  color: #666;
+  font-size: 12px;
+  line-height: 1.7;
+}
+
+.adventure__complete-sub--dim {
+  color: #444;
+  margin-top: 4px;
+}
+
+.adventure__complete-divider {
+  width: 60px;
+  height: 1px;
+  background: #1e1e1e;
+  margin: 24px auto;
+}
+
+.adventure__complete-actions {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 320px;
+  margin-bottom: 24px;
+}
+
+.adventure__cta {
+  display: block;
+  padding: 12px 20px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-family: "DM Mono", monospace;
+  text-decoration: none;
+  text-align: center;
+  transition: all 0.2s;
+}
+
+.adventure__cta--primary {
+  background: #00ff88;
+  color: #000;
+  font-weight: 500;
+}
+
+.adventure__cta--primary:hover {
+  background: #33ffaa;
+  box-shadow: 0 0 20px #00ff8844;
+}
+
+.adventure__cta--secondary {
+  background: transparent;
+  color: #555;
+  border: 1px solid #1e1e1e;
+}
+
+.adventure__cta--secondary:hover {
+  border-color: #333;
+  color: #888;
 }
 
 /* ── MATRIX RAIN ────────────────────────────────────────── */
@@ -620,7 +960,7 @@ body {
   align-items: center;
   justify-content: center;
   gap: 16px;
-  font-family: 'DM Mono', monospace;
+  font-family: "DM Mono", monospace;
 }
 
 .matrix-rain__emoji {
@@ -632,7 +972,9 @@ body {
   color: #00ff88;
   font-size: 20px;
   letter-spacing: 4px;
-  text-shadow: 0 0 30px #00ff88, 0 0 60px #00ff8866;
+  text-shadow:
+    0 0 30px #00ff88,
+    0 0 60px #00ff8866;
   animation: eggGlow 1.5s ease-in-out infinite alternate;
 }
 
@@ -663,11 +1005,25 @@ body {
 }
 
 @keyframes eggPop {
-  from { transform: scale(0) rotate(-20deg); opacity: 0; }
-  to   { transform: scale(1) rotate(0deg);  opacity: 1; }
+  from {
+    transform: scale(0) rotate(-20deg);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1) rotate(0deg);
+    opacity: 1;
+  }
 }
 
 @keyframes eggGlow {
-  from { text-shadow: 0 0 20px #00ff88, 0 0 40px #00ff8844; }
-  to   { text-shadow: 0 0 40px #00ff88, 0 0 80px #00ff8888; }
+  from {
+    text-shadow:
+      0 0 20px #00ff88,
+      0 0 40px #00ff8844;
+  }
+  to {
+    text-shadow:
+      0 0 40px #00ff88,
+      0 0 80px #00ff8888;
+  }
 }

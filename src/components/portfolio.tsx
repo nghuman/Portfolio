@@ -45,8 +45,18 @@ const SKILLS = {
 };
 
 const EDUCATION = [
-  { year: "2016", school: "Hack Reactor", degree: "Advanced Software Engineering", emoji: "⚡" },
-  { year: "2013", school: "Hunter College", degree: "B.A. in Psychology", emoji: "🧠" },
+  {
+    year: "2016",
+    school: "Hack Reactor",
+    degree: "Advanced Software Engineering",
+    emoji: "⚡",
+  },
+  {
+    year: "2013",
+    school: "Hunter College",
+    degree: "B.A. in Psychology",
+    emoji: "🧠",
+  },
 ];
 
 const CLI_RESPONSES: Record<string, string> = {
@@ -62,12 +72,289 @@ const CLI_RESPONSES: Record<string, string> = {
   hire: "🎉 Great taste! Drop a line at navkiran.ghuman@gmail.com\nP.S. — He's really good, trust the metrics.",
   ls: "about.md  skills.json  experience/  education/  contact.txt  secret.exe",
   "secret.exe": "__EASTER_EGG__",
-  whoami: "software engineer by day, Knicks fan since the playground days 🏀, capturing moments 📷, happiest somewhere new ✈️",
+  whoami:
+    "software engineer by day, Knicks fan since the playground days 🏀, capturing moments 📷, happiest somewhere new ✈️",
   pwd: "/home/nav/portfolio",
   date: new Date().toDateString(),
 };
 
-/* ─── MATRIX RAIN ───────────────────────────────────────────────────────── */
+/* ─── TEXT ADVENTURE ────────────────────────────────────────────────────── */
+interface Scene {
+  id: string;
+  location: string;
+  narrative: string[];
+  question: string;
+  choices: { label: string; text: string; correct: boolean; quip: string }[];
+  successLine: string;
+}
+
+const ADVENTURE_SCENES: Scene[] = [
+  {
+    id: "lobby",
+    location: "CHECKPOINT 01 — THE LOBBY",
+    narrative: [
+      "> You've breached the perimeter of Portfolio OS.",
+      "> A security terminal blocks the elevator to Nav's inbox.",
+      '> The guard squints. "Prove you read the file."',
+    ],
+    question:
+      "Nav co-led a redesign at Macy's. What was the annual revenue impact?",
+    choices: [
+      {
+        label: "A",
+        text: "$5M",
+        correct: false,
+        quip: "> Close, but no. That's a rounding error. Try again.",
+      },
+      { label: "B", text: "$50M", correct: true, quip: "" },
+      {
+        label: "C",
+        text: "$500M",
+        correct: false,
+        quip: "> Bold guess. He's good, not magic. Try again.",
+      },
+    ],
+    successLine: "> Elevator unlocks. The guard nods, reluctantly impressed.",
+  },
+  {
+    id: "server",
+    location: "CHECKPOINT 02 — THE SERVER ROOM",
+    narrative: [
+      "> Hum of cooling fans. Racks of blinking drives.",
+      "> A terminal demands you identify the migration.",
+      '> "Which framework did he move away from — and to?"',
+    ],
+    question:
+      "Nav led a frontend migration that improved performance by 30%. What was it?",
+    choices: [
+      {
+        label: "A",
+        text: "jQuery → React",
+        correct: false,
+        quip: "> Not quite. Check the experience window. Try again.",
+      },
+      {
+        label: "B",
+        text: "Angular → Vue",
+        correct: false,
+        quip: "> Reasonable guess, wrong file. Try again.",
+      },
+      { label: "C", text: "Backbone.js → Vue.js", correct: true, quip: "" },
+    ],
+    successLine: "> Access granted. A door hisses open behind the server rack.",
+  },
+  {
+    id: "archive",
+    location: "CHECKPOINT 03 — THE ARCHIVE",
+    narrative: [
+      "> Rows of filing cabinets stretch into darkness.",
+      "> A dusty terminal flickers to life.",
+      '> "Scale. How many users are we talking about?"',
+    ],
+    question: "Nav's work at Macy's supported how many monthly users?",
+    choices: [
+      {
+        label: "A",
+        text: "1 million",
+        correct: false,
+        quip: "> That's a decent SaaS startup. Think bigger. Try again.",
+      },
+      {
+        label: "B",
+        text: "10 million",
+        correct: false,
+        quip: "> Getting warmer. Still an order of magnitude off. Try again.",
+      },
+      { label: "C", text: "100 million+", correct: true, quip: "" },
+    ],
+    successLine:
+      "> The filing cabinet slides aside. A hidden staircase appears.",
+  },
+  {
+    id: "vault",
+    location: "CHECKPOINT 04 — THE VAULT",
+    narrative: [
+      "> You've made it to the final gate.",
+      "> One question stands between you and Nav's inbox.",
+      '> "Who is this person beyond the resume?"',
+    ],
+    question:
+      "According to Nav's terminal, what does he do outside of engineering?",
+    choices: [
+      {
+        label: "A",
+        text: "Chess, hiking, and cooking",
+        correct: false,
+        quip: "> Wrong human. Did you run whoami in the terminal? Try again.",
+      },
+      {
+        label: "B",
+        text: "Knicks fan, photography, travel",
+        correct: true,
+        quip: "",
+      },
+      {
+        label: "C",
+        text: "Gaming, podcasts, and cycling",
+        correct: false,
+        quip: "> Nope. Hint: try typing whoami in the terminal first. Try again.",
+      },
+    ],
+    successLine: "> The vault door swings open. You've earned it.",
+  },
+];
+
+type AdventurePhase = "scene" | "wrong" | "correct" | "complete";
+
+function TextAdventure({ onClose }: { onClose: () => void }) {
+  const [sceneIdx, setSceneIdx] = useState(0);
+  const [phase, setPhase] = useState<AdventurePhase>("scene");
+  const [quip, setQuip] = useState("");
+  const [visibleLines, setVisible] = useState(0);
+  const [showChoices, setShowChoices] = useState(false);
+  const bottomRef = useRef<HTMLDivElement>(null);
+
+  const scene = ADVENTURE_SCENES[sceneIdx];
+
+  // Type out narrative lines one by one
+  useEffect(() => {
+    setVisible(0);
+    setShowChoices(false);
+    setQuip("");
+    setPhase("scene");
+    let i = 0;
+    const t = setInterval(() => {
+      i++;
+      setVisible(i);
+      if (i >= scene.narrative.length) {
+        clearInterval(t);
+        setTimeout(() => setShowChoices(true), 300);
+      }
+    }, 420);
+    return () => clearInterval(t);
+  }, [sceneIdx]);
+
+  useEffect(() => {
+    bottomRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [visibleLines, showChoices, phase, quip]);
+
+  const choose = (choice: Scene["choices"][0]) => {
+    if (phase !== "scene") return;
+    if (!choice.correct) {
+      setQuip(choice.quip);
+      setPhase("wrong");
+      setTimeout(() => {
+        setPhase("scene");
+        setQuip("");
+      }, 2000);
+      return;
+    }
+    setPhase("correct");
+    setTimeout(() => {
+      if (sceneIdx < ADVENTURE_SCENES.length - 1) {
+        setSceneIdx((i) => i + 1);
+      } else {
+        setPhase("complete");
+      }
+    }, 1400);
+  };
+
+  const progressPips = ADVENTURE_SCENES.map((_, i) =>
+    i < sceneIdx ? "█" : i === sceneIdx ? "▶" : "░",
+  ).join("  ");
+
+  if (phase === "complete") {
+    return (
+      <div className="adventure">
+        <div className="adventure__screen adventure__screen--complete">
+          <div className="adventure__complete-badge">✦</div>
+          <div className="adventure__complete-title">CLEARANCE GRANTED</div>
+          <div className="adventure__complete-sub">
+            You passed all 4 checkpoints.
+          </div>
+          <div className="adventure__complete-sub adventure__complete-sub--dim">
+            You clearly read the file. Nav would want to talk to you.
+          </div>
+          <div className="adventure__complete-divider" />
+          <div className="adventure__complete-actions">
+            <a
+              href="mailto:navkiran.ghuman@gmail.com"
+              className="adventure__cta adventure__cta--primary"
+            >
+              📧 navkiran.ghuman@gmail.com
+            </a>
+            <a
+              href="https://linkedin.com/in/-nghuman"
+              target="_blank"
+              rel="noreferrer"
+              className="adventure__cta adventure__cta--secondary"
+            >
+              🔗 linkedin.com/in/-nghuman
+            </a>
+          </div>
+          <button className="adventure__exit" onClick={onClose}>
+            ✕ back to desktop
+          </button>
+        </div>
+      </div>
+    );
+  }
+
+  return (
+    <div className="adventure">
+      <div className="adventure__screen">
+        <div className="adventure__header">
+          <span className="adventure__location">{scene.location}</span>
+          <span className="adventure__progress">{progressPips}</span>
+        </div>
+
+        <div className="adventure__narrative">
+          {scene.narrative.slice(0, visibleLines).map((l, i) => (
+            <div key={i} className="adventure__line">
+              {l}
+            </div>
+          ))}
+          {visibleLines < scene.narrative.length && (
+            <span className="adventure__cursor">█</span>
+          )}
+        </div>
+
+        {showChoices && (
+          <div className="adventure__question-block">
+            <div className="adventure__question">{scene.question}</div>
+
+            {quip && <div className="adventure__quip">{quip}</div>}
+
+            {phase === "correct" && (
+              <div className="adventure__success">{scene.successLine}</div>
+            )}
+
+            {(phase === "scene" || phase === "wrong") && (
+              <div className="adventure__choices">
+                {scene.choices.map((c) => (
+                  <button
+                    key={c.label}
+                    className="adventure__choice"
+                    onClick={() => choose(c)}
+                  >
+                    <span className="adventure__choice-label">[{c.label}]</span>
+                    <span className="adventure__choice-text">{c.text}</span>
+                  </button>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
+
+        <div ref={bottomRef} />
+        <button className="adventure__exit" onClick={onClose}>
+          ✕ abandon mission
+        </button>
+      </div>
+    </div>
+  );
+}
+
 function MatrixRain({ onDone }: { onDone: () => void }) {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const [fading, setFading] = useState(false);
@@ -90,7 +377,8 @@ function MatrixRain({ onDone }: { onDone: () => void }) {
       ctx.font = `${fontSize}px 'DM Mono', monospace`;
       drops.forEach((y, i) => {
         const char = chars[Math.floor(Math.random() * chars.length)];
-        ctx.fillStyle = y === 1 ? "#ffffff" : `rgba(0,255,136,${Math.random() * 0.8 + 0.2})`;
+        ctx.fillStyle =
+          y === 1 ? "#ffffff" : `rgba(0,255,136,${Math.random() * 0.8 + 0.2})`;
         ctx.fillText(char, i * fontSize, y * fontSize);
         if (y * fontSize > canvas.height && Math.random() > 0.975) drops[i] = 0;
         drops[i]++;
@@ -99,8 +387,8 @@ function MatrixRain({ onDone }: { onDone: () => void }) {
     };
     draw();
 
-    const fadeTimer = setTimeout(() => setFading(true), 3200);
-    const doneTimer = setTimeout(onDone, 4000);
+    const fadeTimer = setTimeout(() => setFading(true), 2000);
+    const doneTimer = setTimeout(onDone, 2800);
 
     return () => {
       cancelAnimationFrame(raf);
@@ -113,13 +401,13 @@ function MatrixRain({ onDone }: { onDone: () => void }) {
     <div className={`matrix-rain${fading ? " matrix-rain--fading" : ""}`}>
       <canvas ref={canvasRef} style={{ display: "block" }} />
       <div className="matrix-rain__overlay">
-        {/* <div className="matrix-rain__emoji">🚀</div> */}
-        <div className="matrix-rain__title">EASTER EGG UNLOCKED</div>
-        <div className="matrix-rain__quote">
-          "The most expensive words in engineering are<br />'It would be cool if-'"
-          <div className="matrix-rain__author">— JEAN-LOUIS GASSEE</div>
+        <div className="matrix-rain__title">ACCESS GRANTED</div>
+        <div
+          className="matrix-rain__hint"
+          style={{ color: "#00ff8866", marginTop: 8 }}
+        >
+          loading candidate file...
         </div>
-        {/* <div className="matrix-rain__hint">type: secret.exe to replay</div> */}
       </div>
     </div>
   );
@@ -171,7 +459,7 @@ function Particles() {
             ctx.strokeStyle = `rgba(0,255,136,${0.08 * (1 - dist / 120)})`;
             ctx.stroke();
           }
-        })
+        }),
       );
       raf = requestAnimationFrame(draw);
     };
@@ -239,14 +527,25 @@ interface WindowProps {
   color?: string;
 }
 
-function Window({ title, emoji, children, defaultPos, defaultSize, onClose, color = "#00ff88" }: WindowProps) {
+function Window({
+  title,
+  emoji,
+  children,
+  defaultPos,
+  defaultSize,
+  onClose,
+  color = "#00ff88",
+}: WindowProps) {
   const [pos, setPos] = useState(defaultPos);
   const [minimized, setMinimized] = useState(false);
   const [zIdx, setZIdx] = useState(10);
   const dragging = useRef(false);
   const origin = useRef({ mx: 0, my: 0, wx: 0, wy: 0 });
 
-  const bringToFront = () => { zCounter++; setZIdx(zCounter); };
+  const bringToFront = () => {
+    zCounter++;
+    setZIdx(zCounter);
+  };
 
   const onMouseDown = (e: React.MouseEvent) => {
     if ((e.target as HTMLElement).closest(".window__btn")) return;
@@ -264,7 +563,9 @@ function Window({ title, emoji, children, defaultPos, defaultSize, onClose, colo
         y: origin.current.wy + e.clientY - origin.current.my,
       });
     };
-    const up = () => { dragging.current = false; };
+    const up = () => {
+      dragging.current = false;
+    };
     window.addEventListener("mousemove", move);
     window.addEventListener("mouseup", up);
     return () => {
@@ -278,16 +579,28 @@ function Window({ title, emoji, children, defaultPos, defaultSize, onClose, colo
       className="window"
       onClick={bringToFront}
       style={{
-        left: pos.x, top: pos.y, zIndex: zIdx, width: defaultSize.w,
+        left: pos.x,
+        top: pos.y,
+        zIndex: zIdx,
+        width: defaultSize.w,
         border: `1px solid ${color}33`,
         boxShadow: `0 0 40px ${color}15, 0 12px 40px rgba(0,0,0,0.7)`,
       }}
     >
-      <div className="window__titlebar" onMouseDown={onMouseDown} style={{ borderBottom: `1px solid ${color}22` }}>
+      <div
+        className="window__titlebar"
+        onMouseDown={onMouseDown}
+        style={{ borderBottom: `1px solid ${color}22` }}
+      >
         <button className="window__btn window__btn--close" onClick={onClose} />
-        <button className="window__btn window__btn--min" onClick={() => setMinimized((m) => !m)} />
+        <button
+          className="window__btn window__btn--min"
+          onClick={() => setMinimized((m) => !m)}
+        />
         <button className="window__btn window__btn--max" />
-        <span className="window__title">{emoji} {title}</span>
+        <span className="window__title">
+          {emoji} {title}
+        </span>
       </div>
       {!minimized && (
         <div className="window__body" style={{ maxHeight: defaultSize.h }}>
@@ -301,7 +614,13 @@ function Window({ title, emoji, children, defaultPos, defaultSize, onClose, colo
 /* ─── TERMINAL ──────────────────────────────────────────────────────────── */
 type HistoryEntry = { type: "input" | "sys" | "output"; text: string };
 
-function Terminal({ onClose, onEasterEgg }: { onClose: () => void; onEasterEgg: () => void }) {
+function Terminal({
+  onClose,
+  onEasterEgg,
+}: {
+  onClose: () => void;
+  onEasterEgg: () => void;
+}) {
   const [history, setHistory] = useState<HistoryEntry[]>([
     { type: "sys", text: "Portfolio OS v2.0.26 — Nav Ghuman" },
     { type: "sys", text: 'Type "help" for available commands.' },
@@ -312,43 +631,51 @@ function Terminal({ onClose, onEasterEgg }: { onClose: () => void; onEasterEgg: 
   const bottomRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
 
-  const run = useCallback((cmd: string) => {
-    const t = cmd.trim().toLowerCase();
+  const run = useCallback(
+    (cmd: string) => {
+      const t = cmd.trim().toLowerCase();
 
-    if (t === "clear") {
-      setHistory([{ type: "sys", text: 'Cleared. Type "help" for commands.' }]);
-      setCmdHist((h) => [cmd, ...h]);
-      setHistIdx(-1);
-      setInput("");
-      return;
-    }
+      if (t === "clear") {
+        setHistory([
+          { type: "sys", text: 'Cleared. Type "help" for commands.' },
+        ]);
+        setCmdHist((h) => [cmd, ...h]);
+        setHistIdx(-1);
+        setInput("");
+        return;
+      }
 
-    const res = CLI_RESPONSES[t];
+      const res = CLI_RESPONSES[t];
 
-    // Easter egg — trigger matrix rain
-    if (res === "__EASTER_EGG__") {
+      // Easter egg — trigger matrix rain
+      if (res === "__EASTER_EGG__") {
+        setHistory((h) => [
+          ...h,
+          { type: "input", text: `nav@portfolio:~$ ${cmd}` },
+          { type: "output", text: "executing secret.exe..." },
+          {
+            type: "output",
+            text: "⚠️  classified content detected. stand by.",
+          },
+        ]);
+        setCmdHist((h) => [cmd, ...h]);
+        setHistIdx(-1);
+        setInput("");
+        setTimeout(onEasterEgg, 600);
+        return;
+      }
+
       setHistory((h) => [
         ...h,
         { type: "input", text: `nav@portfolio:~$ ${cmd}` },
-        { type: "output", text: "executing secret.exe..." },
-        { type: "output", text: "⚠️  classified content detected. stand by." },
+        { type: "output", text: res || `command not found: ${t}. Try "help".` },
       ]);
       setCmdHist((h) => [cmd, ...h]);
       setHistIdx(-1);
       setInput("");
-      setTimeout(onEasterEgg, 600);
-      return;
-    }
-
-    setHistory((h) => [
-      ...h,
-      { type: "input", text: `nav@portfolio:~$ ${cmd}` },
-      { type: "output", text: res || `command not found: ${t}. Try "help".` },
-    ]);
-    setCmdHist((h) => [cmd, ...h]);
-    setHistIdx(-1);
-    setInput("");
-  }, [onEasterEgg]);
+    },
+    [onEasterEgg],
+  );
 
   useEffect(() => {
     bottomRef.current?.scrollIntoView({ behavior: "smooth" });
@@ -373,11 +700,35 @@ function Terminal({ onClose, onEasterEgg }: { onClose: () => void; onEasterEgg: 
   };
 
   return (
-    <Window title="terminal" emoji=">_" defaultPos={{ x: 40, y: 80 }} defaultSize={{ w: 520, h: 340 }} onClose={onClose} color="#00ff88">
-      <div className="terminal__output" onClick={() => inputRef.current?.focus()}>
+    <Window
+      title="terminal"
+      emoji=">_"
+      defaultPos={{ x: 40, y: 80 }}
+      defaultSize={{ w: 520, h: 340 }}
+      onClose={onClose}
+      color="#00ff88"
+    >
+      <div
+        className="terminal__output"
+        onClick={() => inputRef.current?.focus()}
+      >
         {history.map((h, i) => (
-          <div key={i} className={`terminal__line--${h.type === "input" ? "input" : h.type === "sys" ? "sys" : "output"}`}>
-            {h.text}
+          <div
+            key={i}
+            className={`terminal__line--${h.type === "input" ? "input" : h.type === "sys" ? "sys" : "output"}`}
+          >
+            {h.text.includes("secret.exe") && h.type === "output"
+              ? h.text.split("secret.exe").flatMap((part, idx, arr) =>
+                  idx < arr.length - 1
+                    ? [
+                        part,
+                        <span key={idx} className="terminal__secret">
+                          secret.exe
+                        </span>,
+                      ]
+                    : [part],
+                )
+              : h.text}
           </div>
         ))}
         <div className="terminal__input-row">
@@ -401,13 +752,22 @@ function Terminal({ onClose, onEasterEgg }: { onClose: () => void; onEasterEgg: 
 /* ─── SKILLS ────────────────────────────────────────────────────────────── */
 function SkillsWindow({ onClose }: { onClose: () => void }) {
   return (
-    <Window title="skills.json" emoji="⚡" defaultPos={{ x: 600, y: 80 }} defaultSize={{ w: 400, h: 400 }} onClose={onClose} color="#facc15">
+    <Window
+      title="skills.json"
+      emoji="⚡"
+      defaultPos={{ x: 600, y: 80 }}
+      defaultSize={{ w: 400, h: 400 }}
+      onClose={onClose}
+      color="#facc15"
+    >
       {Object.entries(SKILLS).map(([cat, items]) => (
         <div className="skills__category" key={cat}>
           <div className="skills__label">{cat}</div>
           <div className="skills__tags">
             {items.map((s) => (
-              <span className="skills__tag" key={s}>{s}</span>
+              <span className="skills__tag" key={s}>
+                {s}
+              </span>
             ))}
           </div>
         </div>
@@ -417,16 +777,35 @@ function SkillsWindow({ onClose }: { onClose: () => void }) {
 }
 
 /* ─── EXPERIENCE ────────────────────────────────────────────────────────── */
-function ExpWindow({ exp, pos, onClose }: { exp: typeof EXPERIENCES[0]; pos: { x: number; y: number }; onClose: () => void }) {
+function ExpWindow({
+  exp,
+  pos,
+  onClose,
+}: {
+  exp: (typeof EXPERIENCES)[0];
+  pos: { x: number; y: number };
+  onClose: () => void;
+}) {
   return (
-    <Window title={exp.company} emoji={exp.emoji} defaultPos={pos} defaultSize={{ w: 460, h: 360 }} onClose={onClose} color={exp.color}>
+    <Window
+      title={exp.company}
+      emoji={exp.emoji}
+      defaultPos={pos}
+      defaultSize={{ w: 460, h: 360 }}
+      onClose={onClose}
+      color={exp.color}
+    >
       <div className="exp__meta">
-        <div className="exp__role" style={{ color: exp.color }}>{exp.role}</div>
+        <div className="exp__role" style={{ color: exp.color }}>
+          {exp.role}
+        </div>
         <div className="exp__period">{exp.period}</div>
       </div>
       {exp.bullets.map((b, i) => (
         <div className="exp__bullet" key={i}>
-          <span className="exp__arrow" style={{ color: exp.color }}>▸</span>
+          <span className="exp__arrow" style={{ color: exp.color }}>
+            ▸
+          </span>
           <span className="exp__text">{b}</span>
         </div>
       ))}
@@ -443,7 +822,14 @@ function AboutWindow({ onClose }: { onClose: () => void }) {
     { label: "Perf Gains", value: "30%↑", color: "#a78bfa" },
   ];
   return (
-    <Window title="nav_ghuman.md" emoji="👤" defaultPos={{ x: 580, y: 120 }} defaultSize={{ w: 480, h: 380 }} onClose={onClose} color="#00ff88">
+    <Window
+      title="nav_ghuman.md"
+      emoji="👤"
+      defaultPos={{ x: 580, y: 120 }}
+      defaultSize={{ w: 480, h: 380 }}
+      onClose={onClose}
+      color="#00ff88"
+    >
       <div className="about__header">
         <div className="about__avatar">👨🏽‍💻</div>
         <div>
@@ -452,23 +838,41 @@ function AboutWindow({ onClose }: { onClose: () => void }) {
         </div>
       </div>
       <p className="about__bio">
-        Specializing in high-scale web platforms and performance-driven UX. Proven track record delivering revenue-impacting features for products serving 100M+ monthly users.
+        Specializing in high-scale web platforms and performance-driven UX.
+        Proven track record delivering revenue-impacting features for products
+        serving 100M+ monthly users.
       </p>
       <div className="about__stats">
         {stats.map((s) => (
           <div className="about__stat" key={s.label}>
-            <div className="about__stat-num" style={{ color: s.color }}>{s.value}</div>
+            <div className="about__stat-num" style={{ color: s.color }}>
+              {s.value}
+            </div>
             <div className="about__stat-label">{s.label}</div>
           </div>
         ))}
       </div>
       <div className="about__links">
         {[
-          ["📧", "navkiran.ghuman@gmail.com", "mailto:navkiran.ghuman@gmail.com"],
+          [
+            "📧",
+            "navkiran.ghuman@gmail.com",
+            "mailto:navkiran.ghuman@gmail.com",
+          ],
           ["📱", "516-236-6339", "tel:5162366339"],
-          ["🔗", "linkedin.com/in/-nghuman", "https://linkedin.com/in/-nghuman"],
+          [
+            "🔗",
+            "linkedin.com/in/-nghuman",
+            "https://linkedin.com/in/-nghuman",
+          ],
         ].map(([ic, label, href]) => (
-          <a key={label} href={href} className="about__link" target="_blank" rel="noreferrer">
+          <a
+            key={label}
+            href={href}
+            className="about__link"
+            target="_blank"
+            rel="noreferrer"
+          >
             <span>{ic}</span>
             <span>{label}</span>
           </a>
@@ -481,7 +885,14 @@ function AboutWindow({ onClose }: { onClose: () => void }) {
 /* ─── EDUCATION ─────────────────────────────────────────────────────────── */
 function EduWindow({ onClose }: { onClose: () => void }) {
   return (
-    <Window title="education/" emoji="🎓" defaultPos={{ x: 700, y: 440 }} defaultSize={{ w: 340, h: 230 }} onClose={onClose} color="#a78bfa">
+    <Window
+      title="education/"
+      emoji="🎓"
+      defaultPos={{ x: 700, y: 440 }}
+      defaultSize={{ w: 340, h: 230 }}
+      onClose={onClose}
+      color="#a78bfa"
+    >
       {EDUCATION.map((e) => (
         <div className="edu__item" key={e.school}>
           <div className="edu__header">
@@ -500,12 +911,12 @@ function EduWindow({ onClose }: { onClose: () => void }) {
 
 /* ─── DOCK ──────────────────────────────────────────────────────────────── */
 const DOCK_APPS = [
-  { id: "about",    emoji: "👤",  label: "About" },
-  { id: "macys",    emoji: "🛍️", label: "Macy's" },
-  { id: "dv",       emoji: "✅",  label: "DoubleVerify" },
-  { id: "skills",   emoji: "⚡",  label: "Skills" },
-  { id: "edu",      emoji: "🎓",  label: "Education" },
-  { id: "terminal", emoji: ">_",  label: "Terminal" },
+  { id: "about", emoji: "👤", label: "About" },
+  { id: "macys", emoji: "🛍️", label: "Macy's" },
+  { id: "dv", emoji: "✅", label: "DoubleVerify" },
+  { id: "skills", emoji: "⚡", label: "Skills" },
+  { id: "edu", emoji: "🎓", label: "Education" },
+  { id: "terminal", emoji: ">_", label: "Terminal" },
 ];
 
 function Dock({ onOpen }: { onOpen: (id: string) => void }) {
@@ -520,7 +931,13 @@ function Dock({ onOpen }: { onOpen: (id: string) => void }) {
           onMouseEnter={() => setHov(a.id)}
           onMouseLeave={() => setHov(null)}
         >
-          <span className={a.emoji === ">_" ? "dock__emoji--terminal" : "dock__emoji"}>{a.emoji}</span>
+          <span
+            className={
+              a.emoji === ">_" ? "dock__emoji--terminal" : "dock__emoji"
+            }
+          >
+            {a.emoji}
+          </span>
           {hov === a.id && <div className="dock__tooltip">{a.label}</div>}
         </div>
       ))}
@@ -531,12 +948,21 @@ function Dock({ onOpen }: { onOpen: (id: string) => void }) {
 /* ─── MENU BAR ──────────────────────────────────────────────────────────── */
 function MenuBar({ onOpen }: { onOpen: (id: string) => void }) {
   const [time, setTime] = useState(
-    new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })
+    new Date().toLocaleTimeString("en-US", {
+      hour: "2-digit",
+      minute: "2-digit",
+    }),
   );
   useEffect(() => {
     const t = setInterval(
-      () => setTime(new Date().toLocaleTimeString("en-US", { hour: "2-digit", minute: "2-digit" })),
-      1000
+      () =>
+        setTime(
+          new Date().toLocaleTimeString("en-US", {
+            hour: "2-digit",
+            minute: "2-digit",
+          }),
+        ),
+      1000,
     );
     return () => clearInterval(t);
   }, []);
@@ -548,7 +974,10 @@ function MenuBar({ onOpen }: { onOpen: (id: string) => void }) {
       </div>
       <div className="menubar__right">
         <div className="menubar__clock">{time}</div>
-        <button className="menubar__terminal-btn" onClick={() => onOpen("terminal")}>
+        <button
+          className="menubar__terminal-btn"
+          onClick={() => onOpen("terminal")}
+        >
           {">_"} terminal
         </button>
       </div>
@@ -560,19 +989,25 @@ function MenuBar({ onOpen }: { onOpen: (id: string) => void }) {
 
 /* ─── MOBILE FEED ───────────────────────────────────────────────────────── */
 function MobileFeed() {
-  const [showEasterEgg, setShowEasterEgg] = useState(false);
   return (
     <div style={{ minHeight: "100vh", background: "#080808" }}>
       <Particles />
       <MenuBar onOpen={() => {}} />
       <div className="mobile-feed">
         <AboutWindow onClose={() => {}} />
-        <ExpWindow exp={EXPERIENCES[0]} pos={{ x: 0, y: 0 }} onClose={() => {}} />
-        <ExpWindow exp={EXPERIENCES[1]} pos={{ x: 0, y: 0 }} onClose={() => {}} />
+        <ExpWindow
+          exp={EXPERIENCES[0]}
+          pos={{ x: 0, y: 0 }}
+          onClose={() => {}}
+        />
+        <ExpWindow
+          exp={EXPERIENCES[1]}
+          pos={{ x: 0, y: 0 }}
+          onClose={() => {}}
+        />
         <SkillsWindow onClose={() => {}} />
         <EduWindow onClose={() => {}} />
       </div>
-      {showEasterEgg && <MatrixRain onDone={() => setShowEasterEgg(false)} />}
     </div>
   );
 }
@@ -593,7 +1028,9 @@ function useIsMobile() {
 function Desktop() {
   const isMobile = useIsMobile();
   const [open, setOpen] = useState<OpenState>({ terminal: true, about: true });
-  const [showEasterEgg, setShowEasterEgg] = useState(false);
+  const [eggPhase, setEggPhase] = useState<"off" | "matrix" | "adventure">(
+    "off",
+  );
 
   if (isMobile) return <MobileFeed />;
 
@@ -605,16 +1042,40 @@ function Desktop() {
       <Cursor />
       <Particles />
       <MenuBar onOpen={openW} />
-      <div className="desktop-hint">drag windows · click dock · type in terminal</div>
+      <div className="desktop-hint">
+        drag windows · click dock · type in terminal
+      </div>
 
-      {open.terminal && <Terminal onClose={() => closeW("terminal")} onEasterEgg={() => setShowEasterEgg(true)} />}
-      {open.about    && <AboutWindow onClose={() => closeW("about")} />}
-      {open.skills   && <SkillsWindow onClose={() => closeW("skills")} />}
-      {open.macys    && <ExpWindow exp={EXPERIENCES[0]} pos={{ x: 80,  y: 110 }} onClose={() => closeW("macys")} />}
-      {open.dv       && <ExpWindow exp={EXPERIENCES[1]} pos={{ x: 160, y: 150 }} onClose={() => closeW("dv")} />}
-      {open.edu      && <EduWindow onClose={() => closeW("edu")} />}
+      {open.terminal && (
+        <Terminal
+          onClose={() => closeW("terminal")}
+          onEasterEgg={() => setEggPhase("matrix")}
+        />
+      )}
+      {open.about && <AboutWindow onClose={() => closeW("about")} />}
+      {open.skills && <SkillsWindow onClose={() => closeW("skills")} />}
+      {open.macys && (
+        <ExpWindow
+          exp={EXPERIENCES[0]}
+          pos={{ x: 80, y: 110 }}
+          onClose={() => closeW("macys")}
+        />
+      )}
+      {open.dv && (
+        <ExpWindow
+          exp={EXPERIENCES[1]}
+          pos={{ x: 160, y: 150 }}
+          onClose={() => closeW("dv")}
+        />
+      )}
+      {open.edu && <EduWindow onClose={() => closeW("edu")} />}
 
-      {showEasterEgg && <MatrixRain onDone={() => setShowEasterEgg(false)} />}
+      {eggPhase === "matrix" && (
+        <MatrixRain onDone={() => setEggPhase("adventure")} />
+      )}
+      {eggPhase === "adventure" && (
+        <TextAdventure onClose={() => setEggPhase("off")} />
+      )}
 
       <Dock onOpen={openW} />
     </div>
@@ -636,7 +1097,10 @@ function Boot({ onDone }: { onDone: () => void }) {
   useEffect(() => {
     let i = 0;
     const t = setInterval(() => {
-      setLines((l) => [...l, { text: BOOT_LINES[i], final: i === BOOT_LINES.length - 1 }]);
+      setLines((l) => [
+        ...l,
+        { text: BOOT_LINES[i], final: i === BOOT_LINES.length - 1 },
+      ]);
       i++;
       if (i >= BOOT_LINES.length) {
         clearInterval(t);
@@ -648,10 +1112,15 @@ function Boot({ onDone }: { onDone: () => void }) {
 
   return (
     <div className="boot-screen">
-      <div className="boot-logo">N<span>.</span>G</div>
+      <div className="boot-logo">
+        N<span>.</span>G
+      </div>
       <div className="boot-lines">
         {lines.map((l, i) => (
-          <div key={i} className={`boot-line ${l.final ? "boot-line--final" : "boot-line--normal"}`}>
+          <div
+            key={i}
+            className={`boot-line ${l.final ? "boot-line--final" : "boot-line--normal"}`}
+          >
             {">"} {l.text}
           </div>
         ))}
