@@ -557,25 +557,6 @@ function MenuBar({ onOpen }: { onOpen: (id: string) => void }) {
 }
 
 /* ─── DESKTOP ICONS ─────────────────────────────────────────────────────── */
-const ICON_APPS = [
-  { id: "macys",  emoji: "🛍️", label: "Macy's" },
-  { id: "dv",     emoji: "✅",  label: "DoubleVerify" },
-  { id: "edu",    emoji: "🎓",  label: "Education" },
-  { id: "skills", emoji: "⚡",  label: "Skills" },
-];
-
-function DesktopIcons({ onOpen }: { onOpen: (id: string) => void }) {
-  return (
-    <div className="desktop-icons">
-      {ICON_APPS.map((a) => (
-        <div key={a.id} className="desktop-icon" onClick={() => onOpen(a.id)}>
-          <span className="desktop-icon__emoji">{a.emoji}</span>
-          <span className="desktop-icon__label">{a.label}</span>
-        </div>
-      ))}
-    </div>
-  );
-}
 
 /* ─── MOBILE FEED ───────────────────────────────────────────────────────── */
 function MobileFeed() {
@@ -586,7 +567,6 @@ function MobileFeed() {
       <MenuBar onOpen={() => {}} />
       <div className="mobile-feed">
         <AboutWindow onClose={() => {}} />
-        <Terminal onClose={() => {}} onEasterEgg={() => setShowEasterEgg(true)} />
         <ExpWindow exp={EXPERIENCES[0]} pos={{ x: 0, y: 0 }} onClose={() => {}} />
         <ExpWindow exp={EXPERIENCES[1]} pos={{ x: 0, y: 0 }} onClose={() => {}} />
         <SkillsWindow onClose={() => {}} />
@@ -625,8 +605,7 @@ function Desktop() {
       <Cursor />
       <Particles />
       <MenuBar onOpen={openW} />
-      <DesktopIcons onOpen={openW} />
-      <div className="desktop-hint">drag windows · click icons · type in terminal</div>
+      <div className="desktop-hint">drag windows · click dock · type in terminal</div>
 
       {open.terminal && <Terminal onClose={() => closeW("terminal")} onEasterEgg={() => setShowEasterEgg(true)} />}
       {open.about    && <AboutWindow onClose={() => closeW("about")} />}

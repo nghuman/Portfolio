@@ -23,7 +23,6 @@ body {
 
   .cursor-dot,
   .cursor-ring,
-  .desktop-icons,
   .desktop-hint,
   .dock,
   .menubar__terminal-btn {
@@ -71,6 +70,7 @@ body {
 
   .terminal__input {
     cursor: auto;
+    font-size: 16px; /* prevents iOS Safari auto-zoom on focus */
   }
 
   .skills__tag {
@@ -218,44 +218,6 @@ body {
 
 .menubar__terminal-btn:hover {
   border-color: #00ff88;
-}
-
-/* ── DESKTOP ICONS ──────────────────────────────────────── */
-.desktop-icons {
-  position: fixed;
-  top: 80px;
-  right: 20px;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-  z-index: 40;
-}
-
-.desktop-icon {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 4px;
-  padding: 10px 14px;
-  border-radius: 8px;
-  cursor: none;
-  background: transparent;
-  transition: background 0.18s;
-}
-
-.desktop-icon:hover {
-  background: rgba(255, 255, 255, 0.06);
-}
-
-.desktop-icon__emoji {
-  font-size: 28px;
-}
-
-.desktop-icon__label {
-  font-size: 10px;
-  color: #888;
-  font-family: 'DM Mono', monospace;
-  text-shadow: 0 1px 4px #000;
 }
 
 /* ── HINT ───────────────────────────────────────────────── */
